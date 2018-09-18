@@ -11,8 +11,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ import java.util.List;
  * description : TODO
  * version : 1.0
  */
-@Resource
+@Service
 public class SearchServiceImpl implements SearchService {
 
     @Autowired
