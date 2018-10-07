@@ -8,6 +8,8 @@ import com.taotao.common.util.IDUtils;
 import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.pojo.TbItemDesc;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -18,6 +20,8 @@ import com.taotao.pojo.TbItem;
 import com.taotao.pojo.TbItemExample;
 import com.taotao.service.ItemService;
 
+import javax.jms.*;
+
 @Service
 public class ItemServiceImpl implements ItemService {
 
@@ -26,6 +30,12 @@ public class ItemServiceImpl implements ItemService {
 
 	@Autowired
 	private TbItemDescMapper descmapper;
+
+	@Autowired
+	private JmsTemplate jmsTemplate;
+
+	@Autowired
+	private Destination topioDestination;
 
 	@Override
 	public EasyUIDataGridResult getItemList(Integer page, Integer rows) {
@@ -69,6 +79,16 @@ public class ItemServiceImpl implements ItemService {
 		// 4.插入商品描述数据
 		// 注入tbitemdesc的mapper
 		descmapper.insertSelective(desc2);
+
+		// 发送商品更新的消息
+		jmsTemplate.send(topioDestination, new MessageCreator() {
+			@Override
+			public Message createMessage(Session session) throws JMSException {
+				TextMessage textMessage = session.createTextMessage(itemId + "");
+				return textMessage;
+			}
+		});
+
 		return TaotaoResult.ok();
 	}
 

@@ -7,8 +7,48 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
-	<bean class="org.apache.solr.client.solrj.impl.HttpSolrServer">
-		<constructor-arg name="baseURL" value="http://192.168.0.12:8080/solr/taotao"></constructor-arg>
+
+
+	<!--单机版solr服务配置-->
+	<!--<bean class="org.apache.solr.client.solrj.impl.HttpSolrServer">-->
+		<!--<constructor-arg name="baseURL" value="http://192.168.0.12:8080/solr/taotao"></constructor-arg>-->
+	<!--</bean>-->
+
+	<!--集群版solr配置-->
+	<!--<bean id="cloudSolrServer" class="org.apache.solr.client.solrj.impl.CloudSolrServer">-->
+		<!--<constructor-arg name="zkHost" value="192.168.0.12:2181,192.168.0.12:2182,192.168.0.12:2183"></constructor-arg>-->
+		<!--<property name="defaultCollection" value="mycollection1"></property>-->
+	<!--</bean>-->
+
+
+	<!--7.4版本-->
+	<!--HttpSolrClient.Builder-->
+	<bean id="httpSolrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder" >
 	</bean>
-	
+
+	<!--CloudSolrClient-->
+	<bean id="CloudSolrClientBuilder" class="org.apache.solr.client.solrj.impl.CloudSolrClient.Builder">
+	</bean>
+
+	<!--SolrClientFactory-->
+	<bean  id="solrClientFactory" class="com.taotao.search.factory.SolrClientFactory">
+		<constructor-arg name="httpSolrCLientBuilder" ref="httpSolrClientBuilder"></constructor-arg>
+		<constructor-arg name="cloudSolrClientBuilder" ref="CloudSolrClientBuilder"></constructor-arg>
+		<constructor-arg name="baseSolrUrl" value="http://192.168.0.12:8080/solr/taotao"></constructor-arg>
+		<constructor-arg name="zkHosts">
+			<list>
+				<value>http://192.168.0.12:2181</value>
+				<value>http://192.168.0.12:2182</value>
+				<value>http://192.168.0.12:2183</value>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!--HttpSolrClient-->
+	<bean id="httpSolrClient" factory-bean="solrClientFactory" factory-method="getHttpSolrClient">
+	</bean>
+
+	<!--CloudSolrClient-->
+	<bean id="cloudSolrClient" factory-bean="solrClientFactory" factory-method="getCloudSolrClient">
+	</bean>
 </beans>

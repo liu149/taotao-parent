@@ -15,4 +15,6 @@ import com.taotao.common.pojo.SearchItem;
 public interface SearchItemMapper {
 	//查询所有的商品的数据
 	public  List<SearchItem> getSearchItemList();
+	//根据商品id查找
+	public SearchItem getItemById(Long itmeId);
 }

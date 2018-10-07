@@ -8,10 +8,11 @@ import com.taotao.search.mapper.SearchItemMapper;
 import com.taotao.search.service.SearchService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class SearchServiceImpl implements SearchService {
     private SearchItemMapper searchItemMapper;
 
     @Autowired
-    private HttpSolrServer solrServer;
+    private HttpSolrClient httpSolrClient;
 
     @Autowired
     private SearchDao searchDao;
@@ -49,10 +50,10 @@ public class SearchServiceImpl implements SearchService {
             document.addField("item_category_name", searchItem.getCategory_name());
             document.addField("item_desc", searchItem.getItem_desc());
             //添加到索引库
-            solrServer.add(document);
+            httpSolrClient.add(document);
         }
         //提交
-        solrServer.commit();
+        httpSolrClient.commit();
         return TaotaoResult.ok();
     }
 
@@ -94,5 +95,10 @@ public class SearchServiceImpl implements SearchService {
         }
         result.setPageCount(pageCount);
         return result;
+    }
+
+    @Override
+    public TaotaoResult updateItemById(Long itemId) throws Exception {
+        return searchDao.updateItemById(itemId);
     }
 }

@@ -30,7 +30,7 @@ public class SearchController {
      * @return
      */
     @RequestMapping("/search")
-    public String search(Integer page, @RequestParam(value="q") String queryString, Model model) throws Exception{
+    public String search(@RequestParam(defaultValue = "1")Integer page, @RequestParam(value="q") String queryString, Model model) throws Exception{
         //1.引入
         //2.注入
         //3.调用
