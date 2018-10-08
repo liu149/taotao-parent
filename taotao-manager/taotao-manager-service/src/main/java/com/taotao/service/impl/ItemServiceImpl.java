@@ -92,4 +92,14 @@ public class ItemServiceImpl implements ItemService {
 		return TaotaoResult.ok();
 	}
 
+	@Override
+	public TbItem getItemById(Long itemId) {
+		return mapper.selectByPrimaryKey(itemId);
+	}
+
+	@Override
+	public TbItemDesc getItemDescById(Long itemId) {
+		return descmapper.selectByPrimaryKey(itemId);
+	}
+
 }
