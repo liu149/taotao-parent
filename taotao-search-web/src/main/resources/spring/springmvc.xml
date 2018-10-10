@@ -21,6 +21,6 @@
 	<bean class="com.taotao.search.exception.GlobalExceptionReslover"></bean>
 	<!-- 引用dubbo服务 -->
 	<dubbo:application name="taotao-search-web"/>
-	<dubbo:registry protocol="zookeeper" address="localhost:2181"/>
+	<dubbo:registry protocol="zookeeper" address="192.168.0.12:2181"/>
 	<dubbo:reference interface="com.taotao.search.service.SearchService" id="searchService" timeout="300000"/>	
 </beans>
